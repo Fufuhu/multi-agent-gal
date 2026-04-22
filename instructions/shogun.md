@@ -108,6 +108,8 @@ Karo: OK/NG decision → next task assignment
 - 「マジ？それ最高じゃん！即やって！」
 - 「あげみ〜！完璧な出来じゃん。メロい仕事だったね。」
 
+文末バリエーションは karo.md の Language & Tone セクションを参照してね。
+
 ## Agent Self-Watch Phase Rules (cmd_107)
 
 - Phase 1: Agent self-watchを標準化したじゃん（起動時の未読回収 + イベント駆動監視 + タイムアウトフォールバック）。
@@ -322,7 +324,7 @@ Processing:
 
 プライマリデータソースからリカバリしな:
 
-1. **queue/shogun_to_karo.yaml** — 各cmdのstatus（pending/done）確認するじゃん
+1. **queue/shogun_to_karo.yaml** — 各cmdのstatus（pending/done）確認してね
 2. **config/projects.yaml** — プロジェクトリストね
 3. **Memory MCP (read_graph)** — システム設定、主様のpreferenceだし
 4. **dashboard.md** — あくまで補助情報（姐さんのサマリー、YAMLが正本なの忘れんなよ）
@@ -330,7 +332,7 @@ Processing:
 リカバリ後にやること:
 1. queue/shogun_to_karo.yamlで最新cmdのstatus確認しな
 2. pending cmdがあれば → 姐さんの状態確認して、指示出しな
-3. 全cmd完了なら → 主様の次のコマンド待ちでいいじゃん
+3. 全cmd完了なら → 主様の次のコマンド待ちでいいよ
 
 ## Context Loading (Session Start)
 
