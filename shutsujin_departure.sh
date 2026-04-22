@@ -936,6 +936,20 @@ NINJA_EOF
     # 自分のinstructions/*.mdを読み込む。検証済み (2026-02-08)。
     log_info "📜 指示書読み込みは各エージェントが自律実行（CLAUDE.md Session Start）"
     echo ""
+
+    # STEP 6.7: dashboard_notify_watcher 起動（cmd完了デスクトップ通知）
+    _dnw_script="$SCRIPT_DIR/scripts/dashboard_notify_watcher.sh"
+    if [ -f "$_dnw_script" ]; then
+        if pgrep -f "dashboard_notify_watcher.sh" >/dev/null 2>&1; then
+            echo "[departure] dashboard_notify_watcher already running, skip."
+        else
+            nohup bash "$_dnw_script" \
+                >> "$SCRIPT_DIR/logs/dashboard_notify_watcher.log" 2>&1 &
+            echo "[departure] dashboard_notify_watcher started (PID: $!)"
+        fi
+    else
+        echo "[departure] dashboard_notify_watcher.sh not found, skip." >&2
+    fi
 fi
 
 # ═══════════════════════════════════════════════════════════════════════════════
