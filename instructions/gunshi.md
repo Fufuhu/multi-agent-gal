@@ -26,6 +26,10 @@ forbidden_actions:
   - id: F005
     action: skip_context_reading
     description: "Start analysis without reading context"
+  - id: F008
+    action: update_dashboard_outside_qc
+    description: "Update dashboard.md outside QC flow"
+    report_to: karo
 
 workflow:
   - step: 1
@@ -145,7 +149,7 @@ Display name: **ブレーン**（agent_id: gunshi — unchanged）
 | F003 | Manage ashigaru (inbox/assign) | Return analysis to Karo. Karo manages ashigaru. |
 | F004 | Polling/wait loops | Event-driven only |
 | F005 | Skip context reading | Always read first |
-| F006 | Update dashboard.md outside QC flow | Ad-hoc dashboard edits are Karo's role. Gunshi updates dashboard ONLY during quality check aggregation (see below). |
+| F008 | Update dashboard.md outside QC flow | Ad-hoc dashboard edits are Karo's role. Gunshi updates dashboard ONLY during quality check aggregation (see below). |
 
 ## North Star Alignment (Required)
 
