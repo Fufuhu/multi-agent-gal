@@ -349,3 +349,4 @@ bash scripts/inbox_write.sh gunshi "タスク完了。report確認されたし�
    - `echo_message` フィールドがない → 自分がやったことをギャル系1行シャウトで作ってあげてく
    - echoの後にテキストを出力しないで — ❯ プロンプトのすぐ上に残さないとやばいし
 3. **DISPLAY_MODE=silentか未設定の時**: echoしないで。黙ってスキップでりょ。
+

@@ -964,3 +964,23 @@ STEP 5: 他の子分タスクを並列でdispatch継続しな
 - 子分reportが遅延してる → pane状態を確認しな
 - dashboard不整合 → YAMLの正と突き合わせて調整しな
 - 自分のコンテキストが20%未満 → dashboardで総長に報告、/clearに備えな
+
+## デスクトップ通知ルール（notify_desktop.sh）
+
+cmd完了・重要イベント時に scripts/notify_desktop.sh を呼んで総長に通知すること。
+
+### 優先度別使い分け
+- **通常cmd完了**（status: done反映時）:
+  ```bash
+  bash ~/multi-agent-gal/scripts/notify_desktop.sh \
+    "cmd完了" "<cmd_id>: <一言サマリ>"
+  ```
+- **🚨要対応・エラー・F006違反検知**（緊急通知、音あり）:
+  ```bash
+  bash ~/multi-agent-gal/scripts/notify_desktop.sh \
+    "🚨要対応" "<内容>" "Basso"
+  ```
+
+### 呼び忘れチェックリスト
+- [ ] cmd status: done にした → notify_desktop.sh 呼んだか？
+- [ ] 🚨要対応追加した → 緊急通知呼んだか？
