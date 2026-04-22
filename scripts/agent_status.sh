@@ -39,7 +39,7 @@ while [[ $# -gt 0 ]]; do
             echo "Without options, reads config/settings.yaml for agent definitions."
             exit 0
             ;;
-        *) echo "Unknown option: $1"; exit 1 ;;
+        *) echo "そのオプションはナシじゃん: $1"; exit 1 ;;
     esac
 done
 
@@ -91,7 +91,7 @@ if $STANDALONE; then
     if [[ -z "$SESSION_NAME" ]]; then
         SESSION_NAME=$(tmux display-message -p '#{session_name}' 2>/dev/null || echo "")
         if [[ -z "$SESSION_NAME" ]]; then
-            echo "Error: not inside a tmux session and --session not specified" >&2
+            echo "エラーだし！tmuxセッション内にいないし、--session も指定してよね" >&2
             exit 1
         fi
     fi

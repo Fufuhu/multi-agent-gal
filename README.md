@@ -81,7 +81,7 @@ You watch the dashboard. That's it.
     ┌─┬─┬─┬─┴─┬─┬─┬─┬────────┐
     │1│2│3│4│5│6│7│ GUNSHI │  ← 7 workers + 1 strategist
     └─┴─┴─┴─┴─┴─┴─┴────────┘
-       ASHIGARU      軍師
+       ASHIGARU      ブレーン
 ```
 
 ---
@@ -966,7 +966,7 @@ When an Ashigaru completes a task, it shouts a personalized battle cry in the tm
 ```
 ┌ ashigaru1 (Sonnet) ──────────┬ ashigaru2 (Sonnet) ──────────┐
 │                               │                               │
-│  ⚔️ 足軽1号、先陣切った！     │  🔥 足軽2号、二番槍の意地！   │
+│  ⚔️ 子分1号、やり切ったし！   │  🔥 子分2号、二番手の気合！   │
 │  八刃一志！                   │  八刃一志！                   │
 │  ❯                            │  ❯                            │
 └───────────────────────────────┴───────────────────────────────┘
@@ -981,7 +981,7 @@ The Karo writes an `echo_message` field in each task YAML. After completing all 
 task:
   task_id: subtask_001
   description: "Create comparison table"
-  echo_message: "🔥 足軽1号、先陣を切って参る！八刃一志！"
+  echo_message: "🔥 子分1号、ガチでいくよ！八刃一志！"
 ```
 
 **Shout mode is the default.** To disable (saves API tokens on the echo call):
@@ -1769,7 +1769,7 @@ Even if you're not comfortable with keyboard shortcuts, you can switch, scroll, 
 <summary><b>What was in v3.4 — Bloom→Agent Routing, E2E Tests, Stop Hook</b></summary>
 
 - **Bloom → Agent routing** — Replaced dynamic model switching with agent-level routing. L1–L3 tasks go to Ashigaru, L4–L6 tasks go to Gunshi. No more mid-session `/model opus` promotions
-- **Gunshi (軍師) as first-class agent** — Strategic advisor on pane 8. Handles deep analysis, design review, architecture evaluation, and complex QC
+- **Gunshi (ブレーン) as first-class agent** — Strategic advisor on pane 8. Handles deep analysis, design review, architecture evaluation, and complex QC
 - **E2E test suite (19 tests, 7 scenarios)** — Mock CLI framework simulates agent behavior in isolated tmux sessions
 - **Stop hook inbox delivery** — Claude Code agents automatically check inbox at turn end via `.claude/settings.json` Stop hook. Eliminates the `send-keys` interruption problem
 - **Model defaults updated** — Karo: Opus → Sonnet. Gunshi: Opus (deep reasoning). Ashigaru: Sonnet (uniform tier)

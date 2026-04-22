@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # inbox_write.sh — メールボックスへのメッセージ書き込み（排他ロック付き）
 # Usage: bash scripts/inbox_write.sh <target_agent> <content> <type> <from>
-# Example: bash scripts/inbox_write.sh karo "足軽5号、任務完了" report_received ashigaru5
+# Example: bash scripts/inbox_write.sh karo "子分5号、任務完了でーす！" report_received ashigaru5
 
 set -e
 
@@ -126,10 +126,10 @@ except Exception as e:
         # Lock timeout
         attempt=$((attempt + 1))
         if [ $attempt -lt $max_attempts ]; then
-            echo "[inbox_write] Lock timeout for $INBOX (attempt $attempt/$max_attempts), retrying..." >&2
+            echo "[inbox_write] ロックタイムアウトだし！$INBOX (${attempt}回目/${max_attempts}回) リトライするね..." >&2
             sleep 1
         else
-            echo "[inbox_write] Failed to acquire lock after $max_attempts attempts for $INBOX" >&2
+            echo "[inbox_write] ${max_attempts}回試したけどロック取れなかったじゃん！$INBOX" >&2
             exit 1
         fi
     fi

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# 🏯 multi-agent-shogun 出陣スクリプト（毎日の起動用）
-# Daily Deployment Script for Multi-Agent Orchestration System
+# 🎀 multi-agent-gal スタートアップスクリプト（毎日の起動用）
+# Daily Startup Script for Multi-Agent Orchestration System
 #
 # 使用方法:
 #   ./shutsujin_departure.sh           # 全エージェント起動（前回の状態を維持）
@@ -39,17 +39,17 @@ if [ ! -f "$VENV_DIR/bin/python3" ] || ! "$VENV_DIR/bin/python3" -c "import yaml
     echo -e "\033[1;33m【報】\033[0m Python venv をセットアップ中..."
     if command -v python3 &>/dev/null; then
         python3 -m venv "$VENV_DIR" 2>/dev/null || {
-            echo -e "\033[1;31m【ERROR】\033[0m python3 -m venv に失敗しました。python3-venv パッケージが必要かもしれません。"
+            echo -e "\033[1;31m【💔エラー】\033[0m python3 -m venv に失敗したじゃん。python3-venv パッケージが必要かもしれないし。"
             echo "  Ubuntu/Debian: sudo apt-get install python3-venv"
             exit 1
         }
         "$VENV_DIR/bin/pip" install -r "$SCRIPT_DIR/requirements.txt" -q 2>/dev/null || {
-            echo -e "\033[1;31m【ERROR】\033[0m pip install に失敗しました。"
+            echo -e "\033[1;31m【💔エラー】\033[0m pip install に失敗したじゃん。"
             exit 1
         }
         echo -e "\033[1;32m【成】\033[0m Python venv セットアップ完了"
     else
-        echo -e "\033[1;31m【ERROR】\033[0m python3 が見つかりません。first_setup.sh を実行してください。"
+        echo -e "\033[1;31m【💔エラー】\033[0m python3 が見つかりません。first_setup.sh を実行してね。"
         exit 1
     fi
 fi
@@ -62,7 +62,7 @@ else
     CLI_ADAPTER_LOADED=false
 fi
 
-# 足軽IDリストと人数を動的に取得（settings.yaml から）
+# 子分IDリストと人数を動的に取得（settings.yaml から）
 if [ "$CLI_ADAPTER_LOADED" = true ]; then
     _ASHIGARU_IDS_STR=$(get_ashigaru_ids)
 else
@@ -70,7 +70,7 @@ else
 fi
 _ASHIGARU_COUNT=$(echo "$_ASHIGARU_IDS_STR" | wc -w | tr -d ' ')
 
-# 色付きログ関数（戦国風）
+# 色付きログ関数（ギャル風）
 log_info() {
     echo -e "\033[1;33m【報】\033[0m $1"
 }
@@ -80,7 +80,7 @@ log_success() {
 }
 
 log_war() {
-    echo -e "\033[1;31m【戦】\033[0m $1"
+    echo -e "\033[1;31m【🎀】\033[0m $1"
 }
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -176,55 +176,55 @@ while [[ $# -gt 0 ]]; do
             ;;
         -h|--help)
             echo ""
-            echo "🏯 multi-agent-shogun 出陣スクリプト"
+            echo "🎀 multi-agent-gal スタートアップスクリプト"
             echo ""
             echo "使用方法: ./shutsujin_departure.sh [オプション]"
             echo ""
             echo "オプション:"
             echo "  -c, --clean         キューとダッシュボードをリセットして起動（クリーンスタート）"
             echo "                      未指定時は前回の状態を維持して起動"
-            echo "  -k, --kessen        決戦の陣（全足軽をOpusで起動）"
-            echo "                      未指定時は平時の陣（足軽1-7=Sonnet, 軍師=Opus）"
+            echo "  -k, --kessen        本気モード（全子分をOpusで起動）"
+            echo "                      未指定時は平常運転（子分1-7=Sonnet, ブレーン=Opus）"
             echo "  -s, --setup-only    tmuxセッションのセットアップのみ（Claude起動なし）"
             echo "  -t, --terminal      Windows Terminal で新しいタブを開く"
             echo "  -shell, --shell SH  シェルを指定（bash または zsh）"
             echo "                      未指定時は config/settings.yaml の設定を使用"
             echo "  --auto-mode-on      Claude を --permission-mode auto-approved で起動"
             echo "  --permission-mode M Claude の permission mode を明示指定"
-            echo "  -S, --silent        サイレントモード（足軽の戦国echo表示を無効化・API節約）"
-            echo "                      未指定時はshoutモード（タスク完了時に戦国風echo表示）"
+            echo "  -S, --silent        サイレントモード（子分のギャルecho表示を無効化・API節約）"
+            echo "                      未指定時はshoutモード（タスク完了時にギャル風echo表示）"
             echo "  -h, --help          このヘルプを表示"
             echo ""
             echo "例:"
-            echo "  ./shutsujin_departure.sh              # 前回の状態を維持して出陣"
+            echo "  ./shutsujin_departure.sh              # 前回の状態を維持してスタート"
             echo "  ./shutsujin_departure.sh -c           # クリーンスタート（キューリセット）"
             echo "  ./shutsujin_departure.sh -s           # セットアップのみ（手動でClaude起動）"
             echo "  ./shutsujin_departure.sh -t           # 全エージェント起動 + ターミナルタブ展開"
             echo "  ./shutsujin_departure.sh -shell bash  # bash用プロンプトで起動"
-            echo "  ./shutsujin_departure.sh -k           # 決戦の陣（全足軽Opus）"
-            echo "  ./shutsujin_departure.sh -c -k         # クリーンスタート＋決戦の陣"
+            echo "  ./shutsujin_departure.sh -k           # 本気モード（全子分Opus）"
+            echo "  ./shutsujin_departure.sh -c -k         # クリーンスタート＋本気モード"
             echo "  ./shutsujin_departure.sh -shell zsh   # zsh用プロンプトで起動"
-            echo "  ./shutsujin_departure.sh --shogun-no-thinking  # 将軍のthinkingを無効化（中継特化）"
+            echo "  ./shutsujin_departure.sh --shogun-no-thinking  # 総長のthinkingを無効化（中継特化）"
             echo "  ./shutsujin_departure.sh --auto-mode-on        # permission auto-approved で起動"
             echo "  ./shutsujin_departure.sh --permission-mode plan  # permission mode を明示指定"
             echo "  ./shutsujin_departure.sh -S           # サイレントモード（echo表示なし）"
             echo ""
             echo "モデル構成:"
-            echo "  将軍:      Opus（デフォルト。--shogun-no-thinkingで無効化）"
-            echo "  家老:      Sonnet（高速タスク管理）"
-            echo "  軍師:      Opus（戦略立案・設計判断）"
-            echo "  足軽1-7:   Sonnet（実働部隊）"
+            echo "  総長:      Opus（デフォルト。--shogun-no-thinkingで無効化）"
+            echo "  姐さん:    Sonnet（高速タスク管理）"
+            echo "  ブレーン:  Opus（戦略立案・設計判断）"
+            echo "  子分1-7:   Sonnet（実働部隊）"
             echo ""
-            echo "陣形:"
-            echo "  平時の陣（デフォルト）: 足軽1-7=Sonnet, 軍師=Opus"
-            echo "  決戦の陣（--kessen）:   全足軽=Opus, 軍師=Opus"
+            echo "モード:"
+            echo "  平常運転（デフォルト）: 子分1-7=Sonnet, ブレーン=Opus"
+            echo "  本気モード（--kessen）:   全子分=Opus, ブレーン=Opus"
             echo ""
             echo "表示モード:"
-            echo "  shout（デフォルト）:  タスク完了時に戦国風echo表示"
+            echo "  shout（デフォルト）:  タスク完了時にギャル風echo表示"
             echo "  silent（--silent）:   echo表示なし（API節約）"
             echo ""
             echo "エイリアス:"
-            echo "  csst  → cd $HOME/multi-agent-shogun && ./shutsujin_departure.sh"
+            echo "  csst  → cd $HOME/multi-agent-gal && ./shutsujin_departure.sh"
             echo "  css   → tmux attach-session -t shogun"
             echo "  csm   → tmux attach-session -t multiagent"
             echo ""
@@ -249,7 +249,7 @@ if [ -n "$SHELL_OVERRIDE" ]; then
 fi
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 出陣バナー表示（CC0ライセンスASCIIアート使用）
+# ギャルバナー表示（CC0ライセンスASCIIアート使用）
 # ───────────────────────────────────────────────────────────────────────────────
 # 【著作権・ライセンス表示】
 # 忍者ASCIIアート: syntax-samurai/ryu - CC0 1.0 Universal (Public Domain)
@@ -269,15 +269,15 @@ show_battle_cry() {
     echo -e "\033[1;31m║\033[0m \033[1;33m███████║██║  ██║╚██████╔╝   ██║   ███████║╚██████╔╝╚█████╔╝██║██║ ╚████║\033[0m \033[1;31m║\033[0m"
     echo -e "\033[1;31m║\033[0m \033[1;33m╚══════╝╚═╝  ╚═╝ ╚═════╝    ╚═╝   ╚══════╝ ╚═════╝  ╚════╝ ╚═╝╚═╝  ╚═══╝\033[0m \033[1;31m║\033[0m"
     echo -e "\033[1;31m╠══════════════════════════════════════════════════════════════════════════════════╣\033[0m"
-    echo -e "\033[1;31m║\033[0m       \033[1;37m出陣じゃーーー！！！\033[0m    \033[1;36m⚔\033[0m    \033[1;35m天下布武！\033[0m                          \033[1;31m║\033[0m"
+    echo -e "\033[1;31m║\033[0m  \033[1;37mさぁ、今日も最強スタートだし！\033[0m    \033[1;36m💅\033[0m    \033[1;35mギャル覇道！\033[0m                    \033[1;31m║\033[0m"
     echo -e "\033[1;31m╚══════════════════════════════════════════════════════════════════════════════════╝\033[0m"
     echo ""
 
     # ═══════════════════════════════════════════════════════════════════════════
-    # 足軽隊列（オリジナル）
+    # 子分隊列（オリジナル）
     # ═══════════════════════════════════════════════════════════════════════════
     echo -e "\033[1;34m  ╔═════════════════════════════════════════════════════════════════════════════╗\033[0m"
-    echo -e "\033[1;34m  ║\033[0m                \033[1;37m【 足 軽 隊 列 ・ 七 名 + 軍 師 配 備 】\033[0m                  \033[1;34m║\033[0m"
+    echo -e "\033[1;34m  ║\033[0m             \033[1;37m【 子 分 隊 列 ・ 七 名 + ブ レ ー ン 配 備 】\033[0m             \033[1;34m║\033[0m"
     echo -e "\033[1;34m  ╚═════════════════════════════════════════════════════════════════════════════╝\033[0m"
 
     cat << 'ASHIGARU_EOF'
@@ -288,20 +288,20 @@ show_battle_cry() {
        ||      ||      ||      ||      ||      ||      ||      ||
       /||\    /||\    /||\    /||\    /||\    /||\    /||\    /||\
       /  \    /  \    /  \    /  \    /  \    /  \    /  \    /  \
-     [足1]   [足2]   [足3]   [足4]   [足5]   [足6]   [足7]   [軍師]
+     [子1]   [子2]   [子3]   [子4]   [子5]   [子6]   [子7]  [ブレーン]
 
 ASHIGARU_EOF
 
-    echo -e "                    \033[1;36m「「「 はっ！！ 出陣いたす！！ 」」」\033[0m"
+    echo -e "                    \033[1;36m「「「 りょ！！ 今日もやり切るじゃん！！ 」」」\033[0m"
     echo ""
 
     # ═══════════════════════════════════════════════════════════════════════════
     # システム情報
     # ═══════════════════════════════════════════════════════════════════════════
     echo -e "\033[1;33m  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\033[0m"
-    echo -e "\033[1;33m  ┃\033[0m  \033[1;37m🏯 multi-agent-shogun\033[0m  〜 \033[1;36m戦国マルチエージェント統率システム\033[0m 〜           \033[1;33m┃\033[0m"
+    echo -e "\033[1;33m  ┃\033[0m  \033[1;37m🎀 multi-agent-gal\033[0m  〜 \033[1;36mギャル系マルチエージェントシステム\033[0m 〜             \033[1;33m┃\033[0m"
     echo -e "\033[1;33m  ┃\033[0m                                                                           \033[1;33m┃\033[0m"
-    echo -e "\033[1;33m  ┃\033[0m  \033[1;35m将軍\033[0m: 統括  \033[1;31m家老\033[0m: 管理  \033[1;33m軍師\033[0m: 戦略(Opus)  \033[1;34m足軽\033[0m: 実働×7  \033[1;33m┃\033[0m"
+    echo -e "\033[1;33m  ┃\033[0m  \033[1;35m総長\033[0m: 統括  \033[1;31m姐さん\033[0m: 管理  \033[1;33mブレーン\033[0m: 戦略(Opus)  \033[1;34m子分\033[0m: 実働×7  \033[1;33m┃\033[0m"
     echo -e "\033[1;33m  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\033[0m"
     echo ""
 }
@@ -309,15 +309,15 @@ ASHIGARU_EOF
 # バナー表示実行
 show_battle_cry
 
-echo -e "  \033[1;33m天下布武！陣立てを開始いたす\033[0m (Setting up the battlefield)"
+echo -e "  \033[1;33mギャル覇道！さっそくセットアップ始めるじゃん\033[0m (Setting up the battlefield)"
 echo ""
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # STEP 1: 既存セッションクリーンアップ
 # ═══════════════════════════════════════════════════════════════════════════════
-log_info "🧹 既存の陣を撤収中..."
-tmux kill-session -t multiagent 2>/dev/null && log_info "  └─ multiagent陣、撤収完了" || log_info "  └─ multiagent陣は存在せず"
-tmux kill-session -t shogun 2>/dev/null && log_info "  └─ shogun本陣、撤収完了" || log_info "  └─ shogun本陣は存在せず"
+log_info "🧹 既存のセッションを片付け中..."
+tmux kill-session -t multiagent 2>/dev/null && log_info "  └─ multiagentセッション、片付け完了" || log_info "  └─ multiagentセッションは存在せず"
+tmux kill-session -t shogun 2>/dev/null && log_info "  └─ shogun本部、片付け完了" || log_info "  └─ shogun本部は存在せず"
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # STEP 1.5: 前回記録のバックアップ（--clean時のみ、内容がある場合）
@@ -371,12 +371,12 @@ else
 fi
 
 if [ "$CLEAN_MODE" = true ]; then
-    log_info "📜 前回の軍議記録を破棄中..."
+    log_info "📜 前回の作業ログを破棄中..."
 
-    # 足軽タスクファイルリセット
+    # 子分タスクファイルリセット
     for i in $(seq 1 "$_ASHIGARU_COUNT"); do
         cat > ./queue/tasks/ashigaru${i}.yaml << EOF
-# 足軽${i}専用タスクファイル
+# 子分${i}専用タスクファイル
 task:
   task_id: null
   parent_cmd: null
@@ -387,9 +387,9 @@ task:
 EOF
     done
 
-    # 軍師タスクファイルリセット
+    # ブレーンタスクファイルリセット
     cat > ./queue/tasks/gunshi.yaml << EOF
-# 軍師専用タスクファイル
+# ブレーン専用タスクファイル
 task:
   task_id: null
   parent_cmd: null
@@ -399,7 +399,7 @@ task:
   timestamp: ""
 EOF
 
-    # 足軽レポートファイルリセット
+    # 子分レポートファイルリセット
     for i in $(seq 1 "$_ASHIGARU_COUNT"); do
         cat > ./queue/reports/ashigaru${i}_report.yaml << EOF
 worker_id: ashigaru${i}
@@ -410,7 +410,7 @@ result: null
 EOF
     done
 
-    # 軍師レポートファイルリセット
+    # ブレーンレポートファイルリセット
     cat > ./queue/reports/gunshi_report.yaml << EOF
 worker_id: gunshi
 task_id: null
@@ -427,9 +427,9 @@ EOF
         echo "messages:" > "./queue/inbox/${agent}.yaml"
     done
 
-    log_success "✅ 陣払い完了"
+    log_success "✅ リセット完了"
 else
-    log_info "📜 前回の陣容を維持して出陣..."
+    log_info "📜 前回の状態を維持してスタート..."
     log_success "✅ キュー・報告ファイルはそのまま継続"
 fi
 
@@ -437,23 +437,23 @@ fi
 # STEP 3: ダッシュボード初期化（--clean時のみ）
 # ═══════════════════════════════════════════════════════════════════════════════
 if [ "$CLEAN_MODE" = true ]; then
-    log_info "📊 戦況報告板を初期化中..."
+    log_info "📊 ダッシュボードを初期化中..."
     TIMESTAMP=$(date "+%Y-%m-%d %H:%M")
 
     if [ "$LANG_SETTING" = "ja" ]; then
         # 日本語のみ
         cat > ./dashboard.md << EOF
-# 📊 戦況報告
+# 📊 進捗報告
 最終更新: ${TIMESTAMP}
 
-## 🚨 要対応 - 殿のご判断をお待ちしております
+## 🚨 要対応 - 総長の判断が必要じゃん
 なし
 
-## 🔄 進行中 - 只今、戦闘中でござる
+## 🔄 進行中 - 今まさにやってる感じ！
 なし
 
-## ✅ 本日の戦果
-| 時刻 | 戦場 | 任務 | 結果 |
+## ✅ 本日の成果
+| 時刻 | 案件 | 任務 | 結果 |
 |------|------|------|------|
 
 ## 🎯 スキル化候補 - 承認待ち
@@ -465,23 +465,23 @@ if [ "$CLEAN_MODE" = true ]; then
 ## ⏸️ 待機中
 なし
 
-## ❓ 伺い事項
+## ❓ 確認事項
 なし
 EOF
     else
         # 日本語 + 翻訳併記
         cat > ./dashboard.md << EOF
-# 📊 戦況報告 (Battle Status Report)
+# 📊 進捗報告 (Progress Report)
 最終更新 (Last Updated): ${TIMESTAMP}
 
-## 🚨 要対応 - 殿のご判断をお待ちしております (Action Required - Awaiting Lord's Decision)
+## 🚨 要対応 - 総長の判断が必要じゃん (Action Required - Awaiting Lord's Decision)
 なし (None)
 
-## 🔄 進行中 - 只今、戦闘中でござる (In Progress - Currently in Battle)
+## 🔄 進行中 - 今まさにやってる感じ！ (In Progress - Currently Working)
 なし (None)
 
-## ✅ 本日の戦果 (Today's Achievements)
-| 時刻 (Time) | 戦場 (Battlefield) | 任務 (Mission) | 結果 (Result) |
+## ✅ 本日の成果 (Today's Achievements)
+| 時刻 (Time) | 案件 (Task) | 任務 (Mission) | 結果 (Result) |
 |------|------|------|------|
 
 ## 🎯 スキル化候補 - 承認待ち (Skill Candidates - Pending Approval)
@@ -493,7 +493,7 @@ EOF
 ## ⏸️ 待機中 (On Standby)
 なし (None)
 
-## ❓ 伺い事項 (Questions for Lord)
+## ❓ 確認事項 (Questions for Lord)
 なし (None)
 EOF
     fi
@@ -524,7 +524,7 @@ fi
 # ═══════════════════════════════════════════════════════════════════════════════
 # STEP 5: shogun セッション作成（1ペイン・window 0 を必ず確保）
 # ═══════════════════════════════════════════════════════════════════════════════
-log_war "👑 将軍の本陣を構築中..."
+log_war "👑 総長の本部を構築中..."
 
 # shogun セッションがなければ作る（-s 時もここで必ず shogun が存在するようにする）
 # window 0 のみ作成し -n main で名前付け（第二 window にするとアタッチ時に空ペインが開くため 1 window に限定）
@@ -537,13 +537,13 @@ fi
 tmux set-option -g window-size latest
 tmux set-option -g aggressive-resize on
 
-# 将軍ペインはウィンドウ名 "main" で指定（base-index 1 環境でも動く）
-SHOGUN_PROMPT=$(generate_prompt "将軍" "magenta" "$SHELL_SETTING")
+# 総長ペインはウィンドウ名 "main" で指定（base-index 1 環境でも動く）
+SHOGUN_PROMPT=$(generate_prompt "総長" "magenta" "$SHELL_SETTING")
 tmux send-keys -t shogun:main "cd \"$(pwd)\" && export PS1='${SHOGUN_PROMPT}' && clear" Enter
-tmux select-pane -t shogun:main -P 'bg=#002b36'  # 将軍の Solarized Dark
+tmux select-pane -t shogun:main -P 'bg=#002b36'  # 総長の Solarized Dark
 tmux set-option -p -t shogun:main @agent_id "shogun"
 
-log_success "  └─ 将軍の本陣、構築完了"
+log_success "  └─ 総長の本部、構築完了"
 echo ""
 
 # pane-base-index を取得（1 の環境ではペインは 1,2,... になる）
@@ -552,7 +552,7 @@ PANE_BASE=$(tmux show-options -gv pane-base-index 2>/dev/null || echo 0)
 # ═══════════════════════════════════════════════════════════════════════════════
 # STEP 5.1: multiagent セッション作成（9ペイン：karo + ashigaru1-8）
 # ═══════════════════════════════════════════════════════════════════════════════
-log_war "⚔️ 家老・足軽・軍師の陣を構築中（9名配備）..."
+log_war "💅 姐さん・子分・ブレーンの配置を構築中（9名配備）..."
 
 # 最初のペイン作成
 if ! tmux new-session -d -s multiagent -n "agents" 2>/dev/null; then
@@ -642,16 +642,16 @@ for i in "${!AGENT_IDS[@]}"; do
     tmux send-keys -t "multiagent:agents.${p}" "cd \"$(pwd)\" && export PS1='${PROMPT_STR}' && clear" Enter
 done
 
-# 家老・軍師ペインの背景色（足軽との視覚的区別）
+# 姐さん・ブレーンペインの背景色（子分との視覚的区別）
 # 注: グループセッションで背景色が引き継がれない問題があるため、コメントアウト（2026-02-14）
-# tmux select-pane -t "multiagent:agents.${PANE_BASE}" -P 'bg=#501515'          # 家老: 赤
-# tmux select-pane -t "multiagent:agents.$((PANE_BASE+8))" -P 'bg=#454510'      # 軍師: 金
+# tmux select-pane -t "multiagent:agents.${PANE_BASE}" -P 'bg=#501515'          # 姐さん: 赤
+# tmux select-pane -t "multiagent:agents.$((PANE_BASE+8))" -P 'bg=#454510'      # ブレーン: 金
 
 # pane-border-format でモデル名を常時表示
 tmux set-option -t multiagent -w pane-border-status top
 tmux set-option -t multiagent -w pane-border-format '#{?pane_active,#[reverse],}#[bold]#{@agent_id}#[default] (#{@model_name}) #{@current_task}'
 
-log_success "  └─ 家老・足軽・軍師の陣、構築完了"
+log_success "  └─ 姐さん・子分・ブレーンの配置、構築完了"
 echo ""
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -677,9 +677,9 @@ if [ "$SETUP_ONLY" = false ]; then
     rm -f /tmp/shogun_idle_*
     echo "idle flags cleared"
 
-    log_war "👑 全軍に Claude Code を召喚中..."
+    log_war "👑 全員に Claude Code を召喚中..."
 
-    # 将軍: CLI Adapter経由でコマンド構築
+    # 総長: CLI Adapter経由でコマンド構築
     _shogun_cli_type="claude"
     _shogun_cmd="claude --model opus --effort max $PERMISSION_FLAG"
     if [ "$CLI_ADAPTER_LOADED" = true ]; then
@@ -696,19 +696,19 @@ d.setdefault('cli',{}).setdefault('agents',{}).setdefault('shogun',{})['thinking
 with open(f,'w') as fh: yaml.safe_dump(d, fh, default_flow_style=False, allow_unicode=True, sort_keys=False)
 " 2>/dev/null
         _shogun_cmd=$(build_cli_command "shogun")
-        log_info "  └─ 将軍 settings.yaml thinking=false に設定"
+        log_info "  └─ 総長 settings.yaml thinking=false に設定"
     fi
     tmux set-option -p -t "shogun:main" @agent_cli "$_shogun_cli_type"
     tmux send-keys -t shogun:main "$_shogun_cmd"
     tmux send-keys -t shogun:main Enter
     _shogun_display=$(get_model_display_name "shogun" 2>/dev/null || echo "Opus")
     tmux set-option -p -t "shogun:main" @model_name "$_shogun_display" 2>/dev/null || true
-    log_info "  └─ 将軍（${_shogun_cli_type} / ${_shogun_display}）、召喚完了"
+    log_info "  └─ 総長（${_shogun_cli_type} / ${_shogun_display}）、召喚完了"
 
     # 少し待機（安定のため）
     sleep 1
 
-    # 家老（pane 0）: CLI Adapter経由でコマンド構築（デフォルト: Sonnet）
+    # 姐さん（pane 0）: CLI Adapter経由でコマンド構築（デフォルト: Sonnet）
     p=$((PANE_BASE + 0))
     _karo_cli_type="claude"
     _karo_cmd="claude --model sonnet --effort max $PERMISSION_FLAG"
@@ -726,10 +726,10 @@ with open(f,'w') as fh: yaml.safe_dump(d, fh, default_flow_style=False, allow_un
     tmux send-keys -t "multiagent:agents.${p}" Enter
     _karo_display=$(get_model_display_name "karo" 2>/dev/null || echo "Sonnet")
     tmux set-option -p -t "multiagent:agents.${p}" @model_name "$_karo_display" 2>/dev/null || true
-    log_info "  └─ 家老（${_karo_display}）、召喚完了"
+    log_info "  └─ 姐さん（${_karo_display}）、召喚完了"
 
     if [ "$KESSEN_MODE" = true ]; then
-        # 決戦の陣: CLI Adapter経由（claudeはOpus強制）
+        # 本気モード: CLI Adapter経由（claudeはOpus強制）
         for i in $(seq 1 "$_ASHIGARU_COUNT"); do
             p=$((PANE_BASE + i))
             _ashi_cli_type="claude"
@@ -751,9 +751,9 @@ with open(f,'w') as fh: yaml.safe_dump(d, fh, default_flow_style=False, allow_un
             tmux send-keys -t "multiagent:agents.${p}" "$_ashi_cmd"
             tmux send-keys -t "multiagent:agents.${p}" Enter
         done
-        log_info "  └─ 足軽1-${_ASHIGARU_COUNT}（決戦の陣）、召喚完了"
+        log_info "  └─ 子分1-${_ASHIGARU_COUNT}（本気モード）、召喚完了"
     else
-        # 平時の陣: CLI Adapter経由（デフォルト: 全足軽=Sonnet）
+        # 平常運転: CLI Adapter経由（デフォルト: 全子分=Sonnet）
         for i in $(seq 1 "$_ASHIGARU_COUNT"); do
             p=$((PANE_BASE + i))
             _ashi_cli_type="claude"
@@ -771,10 +771,10 @@ with open(f,'w') as fh: yaml.safe_dump(d, fh, default_flow_style=False, allow_un
             tmux send-keys -t "multiagent:agents.${p}" "$_ashi_cmd"
             tmux send-keys -t "multiagent:agents.${p}" Enter
         done
-        log_info "  └─ 足軽1-${_ASHIGARU_COUNT}（平時の陣）、召喚完了"
+        log_info "  └─ 子分1-${_ASHIGARU_COUNT}（平常運転）、召喚完了"
     fi
 
-    # 軍師（pane _ASHIGARU_COUNT+1）: Opus Thinking — 戦略立案・設計判断専任
+    # ブレーン（pane _ASHIGARU_COUNT+1）: Opus Thinking — 戦略立案・設計判断専任
     p=$((PANE_BASE + _ASHIGARU_COUNT + 1))
     _gunshi_cli_type="claude"
     _gunshi_cmd="claude --model opus --effort max $PERMISSION_FLAG"
@@ -792,12 +792,12 @@ with open(f,'w') as fh: yaml.safe_dump(d, fh, default_flow_style=False, allow_un
     tmux send-keys -t "multiagent:agents.${p}" Enter
     _gunshi_display=$(get_model_display_name "gunshi" 2>/dev/null || echo "Opus+T")
     tmux set-option -p -t "multiagent:agents.${p}" @model_name "$_gunshi_display" 2>/dev/null || true
-    log_info "  └─ 軍師（${_gunshi_display}）、召喚完了"
+    log_info "  └─ ブレーン（${_gunshi_display}）、召喚完了"
 
     if [ "$KESSEN_MODE" = true ]; then
-        log_success "✅ 決戦の陣で出陣！全軍Opus！"
+        log_success "✅ 本気モードでスタート！全員Opus！"
     else
-        log_success "✅ 平時の陣で出陣（家老=Sonnet, 足軽=Sonnet, 軍師=Opus）"
+        log_success "✅ 平常運転でスタート（姐さん=Sonnet, 子分=Sonnet, ブレーン=Opus）"
     fi
     echo ""
 
@@ -811,7 +811,7 @@ with open(f,'w') as fh: yaml.safe_dump(d, fh, default_flow_style=False, allow_un
     # 忍者戦士（syntax-samurai/ryu - CC0 1.0 Public Domain）
     # ═══════════════════════════════════════════════════════════════════════════
     echo -e "\033[1;35m  ┌────────────────────────────────────────────────────────────────────────────────────────────────────────────┐\033[0m"
-    echo -e "\033[1;35m  │\033[0m                              \033[1;37m【 忍 者 戦 士 】\033[0m  Ryu Hayabusa (CC0 Public Domain)                        \033[1;35m│\033[0m"
+    echo -e "\033[1;35m  │\033[0m                              \033[1;37m【 最 強 ギ ャ ル 】\033[0m  Ryu Hayabusa (CC0 Public Domain)                       \033[1;35m│\033[0m"
     echo -e "\033[1;35m  └────────────────────────────────────────────────────────────────────────────────────────────────────────────┘\033[0m"
 
     cat << 'NINJA_EOF'
@@ -867,17 +867,17 @@ with open(f,'w') as fh: yaml.safe_dump(d, fh, default_flow_style=False, allow_un
 NINJA_EOF
 
     echo ""
-    echo -e "                                    \033[1;35m「 天下布武！勝利を掴め！ 」\033[0m"
+    echo -e "                                    \033[1;35m「 ギャル覇道！最強になるじゃん！ 」\033[0m"
     echo ""
     echo -e "                               \033[0;36m[ASCII Art: syntax-samurai/ryu - CC0 1.0 Public Domain]\033[0m"
     echo ""
 
     echo "  Claude Code の起動を待機中（最大30秒）..."
 
-    # 将軍の起動を確認（最大30秒待機）
+    # 総長の起動を確認（最大30秒待機）
     for i in {1..30}; do
         if tmux capture-pane -t shogun:main -p | grep -q "bypass permissions"; then
-            echo "  └─ 将軍の Claude Code 起動確認完了（${i}秒）"
+            echo "  └─ 総長の Claude Code 起動確認完了（${i}秒）"
             break
         fi
         sleep 1
@@ -900,7 +900,7 @@ NINJA_EOF
     pkill -f "fswatch.*queue/inbox" 2>/dev/null || true
     sleep 1
 
-    # 将軍のwatcher（ntfy受信の自動起床に必要）
+    # 総長のwatcher（ntfy受信の自動起床に必要）
     # 安全モード: phase2/phase3エスカレーションは無効、timeout周期処理も無効（event-drivenのみ）
     _shogun_watcher_cli=$(tmux show-options -p -t "shogun:main" -v @agent_cli 2>/dev/null || echo "claude")
     nohup env ASW_DISABLE_ESCALATION=1 ASW_PROCESS_TIMEOUT=0 ASW_DISABLE_NORMAL_NUDGE=0 \
@@ -908,13 +908,13 @@ NINJA_EOF
         >> "$SCRIPT_DIR/logs/inbox_watcher_shogun.log" 2>&1 &
     disown
 
-    # 家老のwatcher
+    # 姐さんのwatcher
     _karo_watcher_cli=$(tmux show-options -p -t "multiagent:agents.${PANE_BASE}" -v @agent_cli 2>/dev/null || echo "claude")
     nohup bash "$SCRIPT_DIR/scripts/inbox_watcher.sh" karo "multiagent:agents.${PANE_BASE}" "$_karo_watcher_cli" \
         >> "$SCRIPT_DIR/logs/inbox_watcher_karo.log" 2>&1 &
     disown
 
-    # 足軽のwatcher
+    # 子分のwatcher
     for i in $(seq 1 "$_ASHIGARU_COUNT"); do
         p=$((PANE_BASE + i))
         _ashi_watcher_cli=$(tmux show-options -p -t "multiagent:agents.${p}" -v @agent_cli 2>/dev/null || echo "claude")
@@ -923,14 +923,14 @@ NINJA_EOF
         disown
     done
 
-    # 軍師のwatcher
+    # ブレーンのwatcher
     p=$((PANE_BASE + _ASHIGARU_COUNT + 1))
     _gunshi_watcher_cli=$(tmux show-options -p -t "multiagent:agents.${p}" -v @agent_cli 2>/dev/null || echo "claude")
     nohup bash "$SCRIPT_DIR/scripts/inbox_watcher.sh" "gunshi" "multiagent:agents.${p}" "$_gunshi_watcher_cli" \
         >> "$SCRIPT_DIR/logs/inbox_watcher_gunshi.log" 2>&1 &
     disown
 
-    log_success "  └─ $((_ASHIGARU_COUNT + 3))エージェント分のinbox_watcher起動完了（将軍+家老+足軽${_ASHIGARU_COUNT}+軍師）"
+    log_success "  └─ $((_ASHIGARU_COUNT + 3))エージェント分のinbox_watcher起動完了（総長+姐さん+子分${_ASHIGARU_COUNT}+ブレーン）"
 
     # STEP 6.7 は廃止 — CLAUDE.md Session Start (step 1: tmux agent_id) で各自が自律的に
     # 自分のinstructions/*.mdを読み込む。検証済み (2026-02-08)。
@@ -1014,38 +1014,38 @@ echo ""
 # ═══════════════════════════════════════════════════════════════════════════════
 # STEP 7: 環境確認・完了メッセージ
 # ═══════════════════════════════════════════════════════════════════════════════
-log_info "🔍 陣容を確認中..."
+log_info "🔍 配置を確認中..."
 echo ""
 echo "  ┌──────────────────────────────────────────────────────────┐"
-echo "  │  📺 Tmux陣容 (Sessions)                                  │"
+echo "  │  📺 Tmuxセッション一覧 (Sessions)                        │"
 echo "  └──────────────────────────────────────────────────────────┘"
 tmux list-sessions | sed 's/^/     /'
 echo ""
 echo "  ┌──────────────────────────────────────────────────────────┐"
-echo "  │  📋 布陣図 (Formation)                                   │"
+echo "  │  📋 レイアウト図 (Layout)                                │"
 echo "  └──────────────────────────────────────────────────────────┘"
 echo ""
-echo "     【shogunセッション】将軍の本陣"
+echo "     【shogunセッション】総長の本部"
 echo "     ┌─────────────────────────────┐"
-echo "     │  Pane 0: 将軍 (SHOGUN)      │  ← 総大将・プロジェクト統括"
+echo "     │  Pane 0: 総長 (SHOGUN)      │  ← カリスマトップ・プロジェクト統括"
 echo "     └─────────────────────────────┘"
 echo ""
-echo "     【multiagentセッション】家老・足軽・軍師の陣（3x3 = 9ペイン）"
+echo "     【multiagentセッション】姐さん・子分・ブレーンの配置（3x3 = 9ペイン）"
 echo "     ┌─────────┬─────────┬─────────┐"
 echo "     │  karo   │ashigaru3│ashigaru6│"
-echo "     │  (家老) │ (足軽3) │ (足軽6) │"
+echo "     │ (姐さん)│ (子分3) │ (子分6) │"
 echo "     ├─────────┼─────────┼─────────┤"
 echo "     │ashigaru1│ashigaru4│ashigaru7│"
-echo "     │ (足軽1) │ (足軽4) │ (足軽7) │"
+echo "     │ (子分1) │ (子分4) │ (子分7) │"
 echo "     ├─────────┼─────────┼─────────┤"
 echo "     │ashigaru2│ashigaru5│ gunshi  │"
-echo "     │ (足軽2) │ (足軽5) │ (軍師)  │"
+echo "     │ (子分2) │ (子分5) │(ブレーン)│"
 echo "     └─────────┴─────────┴─────────┘"
 echo ""
 
 echo ""
 echo "  ╔══════════════════════════════════════════════════════════╗"
-echo "  ║  🏯 出陣準備完了！天下布武！                              ║"
+echo "  ║  🎀 スタート準備完了！ギャル覇道！                        ║"
 echo "  ╚══════════════════════════════════════════════════════════╝"
 echo ""
 
@@ -1054,11 +1054,11 @@ if [ "$SETUP_ONLY" = true ]; then
     echo ""
     echo "  手動でClaude Codeを起動するには:"
     echo "  ┌──────────────────────────────────────────────────────────┐"
-    echo "  │  # 将軍を召喚                                            │"
+    echo "  │  # 総長を召喚                                            │"
     echo "  │  tmux send-keys -t shogun:main \\                         │"
     echo "  │    'claude ${PERMISSION_FLAG}' Enter         │"
     echo "  │                                                          │"
-    echo "  │  # 家老・足軽を一斉召喚                                  │"
+    echo "  │  # 姐さん・子分を一斉召喚                                │"
     echo "  │  for p in \$(seq $PANE_BASE $((PANE_BASE+8))); do                                 │"
     echo "  │      tmux send-keys -t multiagent:agents.\$p \\            │"
     echo "  │      'claude ${PERMISSION_FLAG}' Enter       │"
@@ -1069,10 +1069,10 @@ fi
 
 echo "  次のステップ:"
 echo "  ┌──────────────────────────────────────────────────────────┐"
-echo "  │  将軍の本陣にアタッチして命令を開始:                      │"
+echo "  │  総長の本部にアタッチして指示を開始:                      │"
 echo "  │     tmux attach-session -t shogun   (または: css)        │"
 echo "  │                                                          │"
-echo "  │  家老・足軽の陣を確認する:                                │"
+echo "  │  姐さん・子分の配置を確認する:                            │"
 echo "  │     tmux attach-session -t multiagent   (または: csm)    │"
 echo "  │                                                          │"
 echo "  │  ※ 各エージェントは指示書を読み込み済み。                 │"
@@ -1080,7 +1080,7 @@ echo "  │    すぐに命令を開始できます。                          
 echo "  └──────────────────────────────────────────────────────────┘"
 echo ""
 echo "  ════════════════════════════════════════════════════════════"
-echo "   天下布武！勝利を掴め！ (Tenka Fubu! Seize victory!)"
+echo "   ギャル覇道！最強になるじゃん！ (Gal Hado! Be the strongest!)"
 echo "  ════════════════════════════════════════════════════════════"
 echo ""
 

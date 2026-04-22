@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""SEO Article Quality Check Script (seo_qc.py)
+"""SEO記事クオリティチェックスクリプト (seo_qc.py)
 
-Usage:
+使い方:
     python3 scripts/seo_qc.py <site> [--base-dir /path/to/seo-affiliate] [--output yaml|json|summary]
-    python3 scripts/seo_qc.py all    # Run all 9 sites
+    python3 scripts/seo_qc.py all    # 全9サイト実行するじゃん
 
-Examples:
+例:
     python3 scripts/seo_qc.py gaichuu
     python3 scripts/seo_qc.py all --output summary
 """
@@ -441,7 +441,7 @@ def run_site(site: str, base_dir: str, output_format: str = "yaml") -> dict:
     area_dir = os.path.join(site_dir, "src", "content", "area")
 
     if not os.path.isdir(area_dir):
-        print(f"ERROR: {area_dir} not found", file=sys.stderr)
+        print(f"エラーだし！{area_dir}が見つからないじゃん", file=sys.stderr)
         return {}
 
     # Find all .md and .mdx files
@@ -450,10 +450,10 @@ def run_site(site: str, base_dir: str, output_format: str = "yaml") -> dict:
     all_files = md_files + mdx_files
 
     if not all_files:
-        print(f"WARNING: No articles found in {area_dir}", file=sys.stderr)
+        print(f"注意じゃん！{area_dir}に記事が見つからないし", file=sys.stderr)
         return {}
 
-    print(f"Checking {site}: {len(all_files)} articles...", file=sys.stderr)
+    print(f"チェックするじゃん {site}: {len(all_files)}記事...", file=sys.stderr)
 
     all_results = {}
     for filepath in all_files:
@@ -462,7 +462,7 @@ def run_site(site: str, base_dir: str, output_format: str = "yaml") -> dict:
             results = run_checks(filepath, site_dir)
             all_results[filename] = results
         except Exception as e:
-            print(f"  ERROR: {filename}: {e}", file=sys.stderr)
+            print(f"  エラーだし！{filename}: {e}", file=sys.stderr)
             all_results[filename] = {"error": str(e)}
 
     summary = aggregate_results(all_results)
@@ -511,9 +511,9 @@ def print_summary(report: dict):
     }
 
     print(f"\n{'='*60}")
-    print(f"  {site} ({total} articles)  —  Overall: {report['overall']['pass_rate']}")
+    print(f"  {site} ({total} 記事)  —  全体: {report['overall']['pass_rate']}")
     print(f"{'='*60}")
-    print(f"  {'Check':<20} {'Pass':>6} {'Fail':>6} {'Rate':>6}")
+    print(f"  {'チェック':<20} {'合格':>6} {'不合格':>6} {'合格率':>6}")
     print(f"  {'-'*40}")
 
     for cid in sorted(results.keys()):
@@ -559,17 +559,17 @@ def main():
             os.makedirs(report_dir, exist_ok=True)
             with open(outpath, "w", encoding="utf-8") as f:
                 yaml.dump(report, f, allow_unicode=True, default_flow_style=False, sort_keys=False)
-            print(f"  -> {outpath}", file=sys.stderr)
+            print(f"  → {outpath}に保存したじゃん！", file=sys.stderr)
 
     # Print grand total if multiple sites
     if len(all_reports) > 1 and args.output in ("summary", "both"):
         print(f"\n{'='*60}")
-        print(f"  GRAND TOTAL ({sum(r['total_articles'] for r in all_reports)} articles)")
+        print(f"  合計 ({sum(r['total_articles'] for r in all_reports)} 記事)")
         print(f"{'='*60}")
         total_pass = sum(r["overall"]["total_pass"] for r in all_reports)
         total_fail = sum(r["overall"]["total_fail"] for r in all_reports)
         total = total_pass + total_fail
-        print(f"  Overall pass rate: {total_pass / total * 100:.1f}%" if total > 0 else "  No data")
+        print(f"  全体合格率: {total_pass / total * 100:.1f}%" if total > 0 else "  データなしじゃん")
         print()
 
 

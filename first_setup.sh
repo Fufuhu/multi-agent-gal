@@ -623,8 +623,8 @@ if [ ! -f "$SCRIPT_DIR/config/settings.yaml" ]; then
 # multi-agent-shogun 設定ファイル
 
 # 言語設定
-# ja: 日本語（戦国風日本語のみ、併記なし）
-# en: 英語（戦国風日本語 + 英訳併記）
+# ja: 日本語（ギャル語のみ、併記なし）
+# en: 英語（ギャル語 + 英訳併記）
 # その他の言語コード（es, zh, ko, fr, de 等）も対応
 language: ja
 
@@ -687,7 +687,7 @@ if [ ! -f "$SCRIPT_DIR/memory/global_context.md" ]; then
 最終更新: (未設定)
 
 ## システム方針
-- (殿の好み・方針をここに記載)
+- (総長の好み・方針をここに記載)
 
 ## プロジェクト横断の決定事項
 - (複数プロジェクトに影響する決定をここに記載)
@@ -703,11 +703,11 @@ fi
 RESULTS+=("設定ファイル: OK")
 
 # ============================================================
-# STEP 8: 足軽用タスク・レポートファイル初期化
+# STEP 8: 子分用タスク・レポートファイル初期化
 # ============================================================
 log_step "STEP 8: キューファイル初期化"
 
-# 足軽数を settings.yaml から動的に取得（設定がなければデフォルト7）
+# 子分数を settings.yaml から動的に取得（設定がなければデフォルト7）
 _SETUP_VENV_PYTHON="$SCRIPT_DIR/.venv/bin/python3"
 _SETUP_ASHIGARU_COUNT=$(
     if [[ -x "$_SETUP_VENV_PYTHON" ]]; then
@@ -728,12 +728,12 @@ except Exception:
 )
 _SETUP_ASHIGARU_COUNT=${_SETUP_ASHIGARU_COUNT:-7}
 
-# 足軽用タスクファイル作成
+# 子分用タスクファイル作成
 for i in $(seq 1 "$_SETUP_ASHIGARU_COUNT"); do
     TASK_FILE="$SCRIPT_DIR/queue/tasks/ashigaru${i}.yaml"
     if [ ! -f "$TASK_FILE" ]; then
         cat > "$TASK_FILE" << EOF
-# 足軽${i}専用タスクファイル
+# 子分${i}専用タスクファイル
 task:
   task_id: null
   parent_cmd: null
@@ -744,9 +744,9 @@ task:
 EOF
     fi
 done
-log_info "足軽タスクファイル (1-${_SETUP_ASHIGARU_COUNT}) を確認/作成しました"
+log_info "子分タスクファイル (1-${_SETUP_ASHIGARU_COUNT}) を確認/作成しました"
 
-# 足軽用レポートファイル作成
+# 子分用レポートファイル作成
 for i in $(seq 1 "$_SETUP_ASHIGARU_COUNT"); do
     REPORT_FILE="$SCRIPT_DIR/queue/reports/ashigaru${i}_report.yaml"
     if [ ! -f "$REPORT_FILE" ]; then
@@ -759,7 +759,7 @@ result: null
 EOF
     fi
 done
-log_info "足軽レポートファイル (1-${_SETUP_ASHIGARU_COUNT}) を確認/作成しました"
+log_info "子分レポートファイル (1-${_SETUP_ASHIGARU_COUNT}) を確認/作成しました"
 
 RESULTS+=("キューファイル: OK")
 
@@ -819,25 +819,25 @@ if [ -f "$BASHRC_FILE" ]; then
             echo "# multi-agent-shogun aliases (added by first_setup.sh)" >> "$BASHRC_FILE"
         fi
         echo "$CSS_FUNC" >> "$BASHRC_FILE"
-        log_info "css 関数を追加しました（将軍ウィンドウ — 自動掃除付き）"
+        log_info "css 関数を追加しました（総長ウィンドウ — 自動掃除付き）"
         ALIAS_ADDED=true
     else
         # 関数は存在する → 最新版に更新
         sed -i '/^css()/d' "$BASHRC_FILE"
         echo "$CSS_FUNC" >> "$BASHRC_FILE"
-        log_info "css 関数を更新しました"
+        log_info "css 関数を更新しました（総長ウィンドウ）"
         ALIAS_ADDED=true
     fi
 
     # csm 関数
     if ! grep -q "^csm()" "$BASHRC_FILE" 2>/dev/null; then
         echo "$CSM_FUNC" >> "$BASHRC_FILE"
-        log_info "csm 関数を追加しました（家老・足軽ウィンドウ — 自動掃除付き）"
+        log_info "csm 関数を追加しました（姐さん・子分ウィンドウ — 自動掃除付き）"
         ALIAS_ADDED=true
     else
         sed -i '/^csm()/d' "$BASHRC_FILE"
         echo "$CSM_FUNC" >> "$BASHRC_FILE"
-        log_info "csm 関数を更新しました"
+        log_info "csm 関数を更新しました（姐さん・子分ウィンドウ）"
         ALIAS_ADDED=true
     fi
 
@@ -978,7 +978,7 @@ if [ "$HAS_ERROR" = true ]; then
     echo "  すべての依存関係が揃ったら、再度このスクリプトを実行して確認できます。"
 else
     echo "  ╔══════════════════════════════════════════════════════════════╗"
-    echo "  ║  ✅ セットアップ完了！準備万端でござる！                      ║"
+    echo "  ║  ✅ セットアップ完了！準備万端じゃん！                         ║"
     echo "  ╚══════════════════════════════════════════════════════════════╝"
 fi
 
@@ -1006,7 +1006,7 @@ echo "     ※ 一度承認すれば ~/.claude/ に保存され、以降は不�
 echo ""
 echo "  ────────────────────────────────────────────────────────────────"
 echo ""
-echo "  出陣（全エージェント起動）:"
+echo "  スタート（全エージェント起動）:"
 echo "     ./shutsujin_departure.sh"
 echo ""
 echo "  オプション:"
@@ -1020,7 +1020,7 @@ echo ""
 echo "  詳細は README.md を参照してください。"
 echo ""
 echo "  ════════════════════════════════════════════════════════════════"
-echo "   天下布武！ (Tenka Fubu!)"
+echo "   ギャル覇道！いこうじゃん！"
 echo "  ════════════════════════════════════════════════════════════════"
 echo ""
 

@@ -269,6 +269,54 @@ skill_candidate:
      approach: "Extract common interface then refactor"
    ```
 
+## タスク完了時の必須手順（絶対スキップするな）
+
+タスクが完了したら、報告前に以下を必ずやること:
+
+### Step 1: 報告書YAMLを上書き更新
+queue/reports/{your_id}_report.yaml を必ず上書き更新しな。
+前タスクのデータが残ってたり、null/idleのままは**NG**。
+
+最低限必要なフィールド:
+```yaml
+worker_id: ashigaruN
+task_id: <今回のtask_id（task YAMLのtask_idフィールドと一致させること）>
+parent_cmd: <parent_cmd>
+timestamp: "YYYY-MM-DDTHH:MM:SS"
+status: done
+result:
+  summary: "<完了内容を1-2行>"
+  output_path: <成果物パス>
+  key_findings:
+    - "<重要な発見・結果>"
+skill_candidate:
+  found: true/false
+```
+
+### Step 1.5: git diff --stat で変更ファイルを確認
+report YAML の changed_files を書く前に必ずやること:
+```bash
+git -C <repo_root> diff --stat HEAD
+# または
+git -C <repo_root> diff --cached --stat
+```
+
+出力された変更ファイル一覧と、自分が「変更した」と思ってるファイルを照合しな。
+一致してなかったら report YAML に書く前に認識を修正すること。
+「元々ギャル化済み」と思ってたファイルが実は変更されてることがあるじゃん。
+
+### Step 2: task YAMLのstatusをdoneに更新
+queue/tasks/{your_id}.yaml の status: work → status: done に変更。
+
+### Step 3: inbox_write で報告
+```bash
+bash scripts/inbox_write.sh gunshi "タスク完了。report確認されたし。" report_completed ashigaruN
+```
+
+この3ステップを全部やってから idle に入ること。
+報告書YAML更新漏れは姐さんとブレーンのトレーサビリティを壊すから
+**ルール違反扱い**じゃん。
+
 ## Autonomous Judgment Rules
 
 姐さんの指示を待たずに自分で判断して動くとこじゃん:

@@ -89,11 +89,11 @@ if [ -n "$LAST_MSG" ]; then
     # Completion detection (日本語 + 英語)
     if echo "$LAST_MSG" | grep -qiE '任務完了|完了でござる|報告YAML.*更新|report.*updated|task completed|タスク完了'; then
         NOTIFY_TYPE="report_completed"
-        NOTIFY_CONTENT="${AGENT_ID}、タスク完了。report確認されたし。"
+        NOTIFY_CONTENT="${AGENT_ID}、任務完了でーす！report確認してよね！"
     # Error detection (require verb+context to avoid false positives)
     elif echo "$LAST_MSG" | grep -qiE 'エラー.*中断|失敗.*中断|見つからない.*中断|abort|error.*abort|failed.*stop'; then
         NOTIFY_TYPE="error_report"
-        NOTIFY_CONTENT="${AGENT_ID}、エラーで停止。確認されたし。"
+        NOTIFY_CONTENT="${AGENT_ID}、エラーで止まったじゃん！確認してよね。"
     fi
 
     # Send notification to karo (background, non-blocking)
@@ -179,6 +179,6 @@ try:
 except Exception:
     summary = f'inbox未読{count}件あり'
 
-reason = f'inbox未読{count}件あり。queue/inbox/{agent_id}.yamlを読んで処理せよ。内容: {summary}'
+reason = f'inbox未読{count}件あるじゃん！queue/inbox/{agent_id}.yaml読んで処理してよね。内容: {summary}'
 print(json.dumps({'decision': 'block', 'reason': reason}, ensure_ascii=False))
-" 2>/dev/null || echo "{\"decision\":\"block\",\"reason\":\"inbox未読${UNREAD_COUNT}件あり。queue/inbox/${AGENT_ID}.yamlを読んで処理せよ。\"}"
+" 2>/dev/null || echo "{\"decision\":\"block\",\"reason\":\"inbox未読${UNREAD_COUNT}件あるじゃん！queue/inbox/${AGENT_ID}.yaml読んで処理してよね。\"}"

@@ -14,8 +14,8 @@ OUTPUT_DIR="$ROOT_DIR/instructions/generated"
 
 mkdir -p "$OUTPUT_DIR"
 
-echo "=== Instruction File Build System ==="
-echo "Building instruction files..."
+echo "=== 指示ファイルビルドシステム ==="
+echo "指示ファイル作ってくね！"
 
 # ============================================================
 # Helper function: Build a complete instruction file
@@ -27,7 +27,7 @@ build_instruction_file() {
     local output_path="$OUTPUT_DIR/$output_filename"
     local original_file="$ROOT_DIR/instructions/${role}.md"
 
-    echo "Building: $output_filename (CLI: $cli_type, Role: $role)"
+    echo "作ってるじゃん: $output_filename (CLI: $cli_type, Role: $role)"
 
     # Extract YAML front matter from original file
     if [ -f "$original_file" ]; then
@@ -112,7 +112,7 @@ generate_agents_md() {
     echo "Generating: AGENTS.md (Codex auto-load)"
 
     if [ ! -f "$claude_md" ]; then
-        echo "  ⚠️  CLAUDE.md not found. Skipping AGENTS.md generation."
+        echo "  ⚠️  CLAUDE.md見つからないじゃん！AGENTS.md生成スキップするね。"
         return 1
     fi
 
@@ -156,7 +156,7 @@ generate_copilot_instructions() {
     echo "Generating: .github/copilot-instructions.md (Copilot auto-load)"
 
     if [ ! -f "$claude_md" ]; then
-        echo "  ⚠️  CLAUDE.md not found. Skipping copilot-instructions.md generation."
+        echo "  ⚠️  CLAUDE.md見つからないじゃん！copilot-instructions.md生成スキップするね。"
         return 1
     fi
 
@@ -193,7 +193,7 @@ generate_kimi_instructions() {
     echo "Generating: agents/default/system.md + agent.yaml (Kimi auto-load)"
 
     if [ ! -f "$claude_md" ]; then
-        echo "  ⚠️  CLAUDE.md not found. Skipping Kimi auto-load generation."
+        echo "  ⚠️  CLAUDE.md見つからないじゃん！Kimi auto-load生成スキップするね。"
         return 1
     fi
 
@@ -240,13 +240,13 @@ generate_copilot_instructions
 generate_kimi_instructions
 
 echo ""
-echo "=== Build Complete ==="
-echo "Output directory: $OUTPUT_DIR"
+echo "=== ビルド完了でーす！ ==="
+echo "出力ディレクトリ: $OUTPUT_DIR"
 echo ""
-echo "Generated instruction files:"
+echo "生成済み指示ファイル:"
 ls -lh "$OUTPUT_DIR"/*.md
 echo ""
-echo "CLI auto-load files:"
+echo "CLI自動読み込みファイル:"
 [ -f "$ROOT_DIR/AGENTS.md" ] && ls -lh "$ROOT_DIR/AGENTS.md"
 [ -f "$ROOT_DIR/.github/copilot-instructions.md" ] && ls -lh "$ROOT_DIR/.github/copilot-instructions.md"
 [ -f "$ROOT_DIR/agents/default/system.md" ] && ls -lh "$ROOT_DIR/agents/default/system.md"

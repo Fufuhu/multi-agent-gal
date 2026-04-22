@@ -11,7 +11,7 @@ source "$SCRIPT_DIR/lib/ntfy_auth.sh"
 
 TOPIC=$(grep 'ntfy_topic:' "$SETTINGS" | awk '{print $2}' | tr -d '"')
 if [ -z "$TOPIC" ]; then
-  echo "ntfy_topic not configured in settings.yaml" >&2
+  echo "ntfy_topicがsettings.yamlに設定されてないじゃん！" >&2
   exit 1
 fi
 

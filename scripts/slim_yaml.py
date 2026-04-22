@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-YAML Slimming Utility
+YAMLスリム化ツール
 
-Removes completed/archived items from YAML queue files to maintain performance.
-- For Karo: Archives completed task/report files and finished command queue entries.
-- For all agents: Archives read: true messages from inbox files.
+YAMLキューファイルから完了・アーカイブ済みアイテムを削除してパフォーマンス維持するじゃん。
+- 姐さん用: 完了したtask/reportファイルとコマンドキューをアーカイブするよ。
+- 全エージェント用: inbox内のread: trueメッセージをアーカイブするじゃん。
 """
 
 import os
@@ -28,7 +28,7 @@ def load_yaml(filepath):
     except FileNotFoundError:
         return {}
     except yaml.YAMLError as e:
-        print(f"Error parsing {filepath}: {e}", file=sys.stderr)
+        print(f"ヤバいじゃん！{filepath}のパースでエラーだし: {e}", file=sys.stderr)
         return {}
 
 
@@ -39,7 +39,7 @@ def save_yaml(filepath, data):
             yaml.dump(data, f, allow_unicode=True, sort_keys=False, default_flow_style=False)
         return True
     except Exception as e:
-        print(f"Error writing {filepath}: {e}", file=sys.stderr)
+        print(f"ヤバいじゃん！{filepath}の書き込みでエラーだし: {e}", file=sys.stderr)
         return False
 
 
@@ -81,8 +81,8 @@ def ensure_parent_dir(path):
 
 def archive_taskspec(filepath, archive_path, data, dry_run=False):
     if dry_run:
-        print(f"[DRY-RUN] would archive: {filepath}")
-        print(f"[DRY-RUN] would write: {archive_path}")
+        print(f"[DRY-RUN] アーカイブするよ: {filepath}")
+        print(f"[DRY-RUN] 書き出すよ: {archive_path}")
         return True
 
     ensure_parent_dir(archive_path)
@@ -125,7 +125,7 @@ def slim_tasks(dry_run=False):
                 return False
 
             if dry_run:
-                print(f"[DRY-RUN] would overwrite: {filepath} with {IDLE_STUB}")
+                print(f"[DRY-RUN] 上書きするよ: {filepath} → {IDLE_STUB}")
                 continue
 
             if not save_yaml(filepath, IDLE_STUB):
@@ -140,8 +140,8 @@ def slim_tasks(dry_run=False):
             archive_path = archive_dir / f'{filepath.stem}_{timestamp}{filepath.suffix}'
 
         if dry_run:
-            print(f"[DRY-RUN] would archive: {filepath}")
-            print(f"[DRY-RUN] would move to: {archive_path}")
+            print(f"[DRY-RUN] アーカイブするよ: {filepath}")
+            print(f"[DRY-RUN] 移動するよ: {archive_path}")
             continue
 
         ensure_parent_dir(archive_path)
@@ -180,8 +180,8 @@ def slim_reports(dry_run=False):
             archive_path = archive_dir / f'{filepath.stem}_{timestamp}{filepath.suffix}'
 
         if dry_run:
-            print(f"[DRY-RUN] would archive: {filepath}")
-            print(f"[DRY-RUN] would move to: {archive_path}")
+            print(f"[DRY-RUN] アーカイブするよ: {filepath}")
+            print(f"[DRY-RUN] 移動するよ: {archive_path}")
             continue
 
         ensure_parent_dir(archive_path)
@@ -206,7 +206,7 @@ def slim_inbox(agent_id, dry_run=False):
 
     messages = data.get('messages', [])
     if not isinstance(messages, list):
-        print("Error: messages is not a list", file=sys.stderr)
+        print("エラーだし！messagesがリストじゃないじゃん", file=sys.stderr)
         return False
 
     # Separate unread and archived messages
@@ -228,8 +228,8 @@ def slim_inbox(agent_id, dry_run=False):
     archive_file = archive_dir / f'inbox_{agent_id}_{archive_timestamp}.yaml'
 
     if dry_run:
-        print(f"[DRY-RUN] would archive: {inbox_file}")
-        print(f"[DRY-RUN] would move to: {archive_file}")
+        print(f"[DRY-RUN] アーカイブするよ: {inbox_file}")
+        print(f"[DRY-RUN] 移動するよ: {archive_file}")
         return True
 
     # Write archived messages to timestamped file
@@ -240,11 +240,11 @@ def slim_inbox(agent_id, dry_run=False):
     # Update main file with unread messages only
     data['messages'] = unread
     if not save_yaml(inbox_file, data):
-        print(f"Error: Failed to update {inbox_file}, but archive was created", file=sys.stderr)
+        print(f"エラーだし！{inbox_file}の更新に失敗したけどアーカイブは作れたじゃん", file=sys.stderr)
         return False
 
     if archived:
-        print(f"Archived {len(archived)} messages from {agent_id} to {archive_file.name}", file=sys.stderr)
+        print(f"{agent_id}から{len(archived)}件のメッセージをアーカイブしたじゃん → {archive_file.name}", file=sys.stderr)
     return True
 
 
@@ -255,7 +255,7 @@ def slim_shugun_to_karo():
     shogun_file = queue_dir / 'shogun_to_karo.yaml'
 
     if not shogun_file.exists():
-        print(f"Warning: {shogun_file} not found", file=sys.stderr)
+        print(f"注意じゃん！{shogun_file}が見つからないし", file=sys.stderr)
         return True
 
     data = load_yaml(shogun_file)
@@ -266,7 +266,7 @@ def slim_shugun_to_karo():
 
     queue = data.get(key, [])
     if not isinstance(queue, list):
-        print("Error: queue is not a list", file=sys.stderr)
+        print("エラーだし！queueがリストじゃないじゃん", file=sys.stderr)
         return False
 
     # Separate active and archived commands
@@ -295,10 +295,10 @@ def slim_shugun_to_karo():
     # Update main file with active commands only
     data[key] = active
     if not save_yaml(shogun_file, data):
-        print(f"Error: Failed to update {shogun_file}, but archive was created", file=sys.stderr)
+        print(f"エラーだし！{shogun_file}の更新に失敗したけど、アーカイブは作れたじゃん", file=sys.stderr)
         return False
 
-    print(f"Archived {len(archived)} commands to {archive_file.name}", file=sys.stderr)
+    print(f"{len(archived)}件のコマンドをアーカイブしたじゃん → {archive_file.name}", file=sys.stderr)
     return True
 
 
@@ -311,11 +311,11 @@ def slim_all_inboxes(dry_run=False):
     for filepath in sorted(inbox_dir.glob('*.yaml')):
         agent_id = filepath.stem
         if dry_run:
-            print(f"[DRY-RUN] processing inbox file: {filepath}")
+            print(f"[DRY-RUN] inboxファイル処理するよ: {filepath}")
         if not slim_inbox(agent_id, dry_run=dry_run):
             return False
         if dry_run:
-            print(f"[DRY-RUN] finished inbox file: {filepath}")
+            print(f"[DRY-RUN] inboxファイル処理完了じゃん: {filepath}")
 
     return True
 
@@ -334,7 +334,7 @@ def migration(dry_run=False):
         return True
 
     if dry_run:
-        print(f"[DRY-RUN] would migrate: {len(candidates)} files")
+        print(f"[DRY-RUN] {len(candidates)}ファイル移行するよ")
         return True
 
     target_dir.mkdir(parents=True, exist_ok=True)
@@ -352,7 +352,7 @@ def parse_arguments():
     args = [arg for arg in sys.argv[1:] if arg != '--dry-run']
     dry_run = '--dry-run' in sys.argv[1:]
     if len(args) < 1:
-        print("Usage: slim_yaml.py <agent_id> [--dry-run]", file=sys.stderr)
+        print("使い方: slim_yaml.py <agent_id> [--dry-run]", file=sys.stderr)
         sys.exit(1)
 
     return args[0], dry_run

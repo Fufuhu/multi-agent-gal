@@ -167,13 +167,13 @@ while true; do
 
         # Auto-reply removed — shogun replies directly after processing.
 
-        # Wake shogun via inbox (ntfy処理は将軍が直接受信)
+        # Wake shogun via inbox (ntfy処理は総長が直接受信)
         bash "$SCRIPT_DIR/scripts/inbox_write.sh" shogun \
-            "ntfyから新しいメッセージ受信。queue/ntfy_inbox.yaml を確認し処理せよ。" \
+            "ntfyから新しいメッセージ来たじゃん！queue/ntfy_inbox.yaml 確認して処理してよね。" \
             ntfy_received ntfy_listener
     done
 
     # Connection dropped — reconnect after brief pause
-    echo "[$(date)] Connection lost, reconnecting in 5s..." >&2
+    echo "[$(date)] 接続切れたじゃん！5秒後に再接続するね..." >&2
     sleep 5
 done

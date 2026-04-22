@@ -2,10 +2,10 @@
 """
 dashboard-viewer.py
 
-Serves dashboard.md as a browser-viewable page with auto-refresh on file change.
-Uses only Python3 standard library. No pip install required.
+dashboard.mdをブラウザで見れるページとして配信するやつ。ファイル変更時に自動リフレッシュするじゃん。
+Python3標準ライブラリのみで動くし。pip installも不要だよ。
 
-Usage:
+使い方:
     python3 scripts/dashboard-viewer.py
 """
 
@@ -278,7 +278,7 @@ def main():
     dashboard_path = repo_root / "dashboard.md"
 
     if not dashboard_path.exists():
-        print(f"Error: dashboard.md not found at {dashboard_path}", file=sys.stderr)
+        print(f"エラーだし！dashboard.mdが見つからないじゃん: {dashboard_path}", file=sys.stderr)
         sys.exit(1)
 
     # Inject path into handler class
@@ -291,18 +291,17 @@ def main():
     except OSError as e:
         if e.errno == 48 or e.errno == 98:  # Address already in use (macOS=48, Linux=98)
             print(
-                f"Error: Port {PORT} is already in use. "
-                "Another instance may be running.",
+                f"エラーだし！ポート{PORT}すでに使われてるじゃん。別インスタンスが動いてるかも！",
                 file=sys.stderr,
             )
         else:
-            print(f"Error: {e}", file=sys.stderr)
+            print(f"エラーだし！{e}", file=sys.stderr)
         sys.exit(1)
 
     url = f"http://127.0.0.1:{PORT}"
-    print(f"Dashboard viewer running at {url}")
-    print(f"Serving: {dashboard_path}")
-    print("Press Ctrl+C to stop.")
+    print(f"ダッシュボードビューア起動したじゃん！ {url}")
+    print(f"配信中: {dashboard_path}")
+    print("止めるときはCtrl+C押しな！")
 
     # Open browser after a short delay so the server is ready
     def open_browser():
@@ -315,7 +314,7 @@ def main():
     try:
         server.serve_forever()
     except KeyboardInterrupt:
-        print("\nStopped.")
+        print("\n止まったし！")
         server.server_close()
 
 
