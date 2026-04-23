@@ -386,9 +386,21 @@ if [ "$SETUP_OS" = "Darwin" ]; then
         RESULTS+=("file-watcher: OK (fswatch)")
     else
         log_warn "fswatch がインストールされていません"
-        echo "  macOS: brew install fswatch"
-        RESULTS+=("file-watcher: 未インストール (brew install fswatch)")
-        HAS_ERROR=true
+        if command -v brew &> /dev/null; then
+            log_info "fswatch を brew でインストール中..."
+            if brew install fswatch 2>/dev/null; then
+                log_success "fswatch インストール完了"
+                RESULTS+=("file-watcher: インストール完了 (fswatch)")
+            else
+                log_error "fswatch のインストールに失敗しました"
+                RESULTS+=("file-watcher: インストール失敗")
+                HAS_ERROR=true
+            fi
+        else
+            log_error "Homebrew が必要です: https://brew.sh/"
+            RESULTS+=("file-watcher: 未インストール (brew不在)")
+            HAS_ERROR=true
+        fi
     fi
 else
     # Linux: inotifywait
@@ -413,6 +425,70 @@ else
             HAS_ERROR=true
         fi
     fi
+fi
+
+# --- Desktop notification (noti / notify-send) ---
+if [ "$SETUP_OS" = "Darwin" ]; then
+    # macOS: noti 優先（独自バンドルIDで通知許可が安定）、osascript は fallback
+    if command -v noti &> /dev/null; then
+        log_success "noti がインストール済みです (macOS desktop notification)"
+        RESULTS+=("desktop-notify: OK (noti)")
+    else
+        log_warn "noti がインストールされていません"
+        if command -v brew &> /dev/null; then
+            log_info "noti を brew でインストール中..."
+            if brew install noti 2>/dev/null; then
+                log_success "noti インストール完了"
+                RESULTS+=("desktop-notify: インストール完了 (noti)")
+            else
+                log_warn "noti のインストールに失敗しました（osascript fallback で動作可）"
+                RESULTS+=("desktop-notify: noti失敗 / osascript fallback")
+            fi
+        else
+            log_warn "Homebrew 不在で noti は未インストール（osascript fallback で動作可）"
+            RESULTS+=("desktop-notify: noti未インストール / osascript fallback")
+        fi
+    fi
+else
+    # Linux/Ubuntu: notify-send (libnotify-bin)
+    if command -v notify-send &> /dev/null; then
+        log_success "notify-send がインストール済みです (Linux desktop notification)"
+        RESULTS+=("desktop-notify: OK (notify-send)")
+    else
+        log_warn "notify-send がインストールされていません"
+        if command -v apt-get &> /dev/null; then
+            log_info "libnotify-bin をインストール中..."
+            if sudo apt-get install -y libnotify-bin 2>/dev/null; then
+                log_success "libnotify-bin インストール完了"
+                RESULTS+=("desktop-notify: インストール完了 (notify-send)")
+            else
+                log_error "libnotify-bin のインストールに失敗しました"
+                RESULTS+=("desktop-notify: インストール失敗")
+                HAS_ERROR=true
+            fi
+        else
+            log_error "手動で libnotify-bin をインストールしてください"
+            RESULTS+=("desktop-notify: 未インストール")
+            HAS_ERROR=true
+        fi
+    fi
+fi
+
+# --- notify_desktop.sh 実行権限チェック ---
+NOTIFY_SCRIPT="$SCRIPT_DIR/scripts/notify_desktop.sh"
+if [ -f "$NOTIFY_SCRIPT" ]; then
+    if [ -x "$NOTIFY_SCRIPT" ]; then
+        log_success "notify_desktop.sh に実行権限あり"
+        RESULTS+=("notify_desktop.sh: OK")
+    else
+        log_info "notify_desktop.sh に実行権限を付与中..."
+        chmod +x "$NOTIFY_SCRIPT"
+        log_success "notify_desktop.sh に実行権限を付与しました"
+        RESULTS+=("notify_desktop.sh: chmod +x 実行")
+    fi
+else
+    log_warn "notify_desktop.sh が見つかりません: $NOTIFY_SCRIPT"
+    RESULTS+=("notify_desktop.sh: 不在")
 fi
 
 # ============================================================
