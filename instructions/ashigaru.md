@@ -247,7 +247,7 @@ skill_candidate:
 1. ID確認: `tmux display-message -t "$TMUX_PANE" -p '#{@agent_id}'`
 2. `queue/tasks/ashigaru{N}.yaml` を読む
    - `assigned` → 作業を再開するよ！
-   - `done` → 次の指示を待つじゃん
+   - `done` → **次の指示を待つだけ。絶対に再報告・再実行しないで！** done=wait (DO NOT re-report, DO NOT re-execute)
 3. Memory MCP（read_graph）が使えるなら読んどく
 4. taskにprojectフィールドがあったら `context/{project}.md` も読む
 5. dashboard.mdはあくまで副次情報だし — 信頼できるのはYAMLだからね！
