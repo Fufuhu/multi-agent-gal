@@ -31,7 +31,13 @@ else
 fi
 
 # Call the Python implementation
-python3 "$(dirname "$0")/slim_yaml.py" "$@"
+# Prefer venv python (has PyYAML installed); fall back to system python3
+VENV_PY="$(dirname "$0")/../.venv/bin/python3"
+if [ -x "$VENV_PY" ]; then
+    "$VENV_PY" "$(dirname "$0")/slim_yaml.py" "$@"
+else
+    python3 "$(dirname "$0")/slim_yaml.py" "$@"
+fi
 exit_code=$?
 
 # Lock is automatically released when file descriptor is closed

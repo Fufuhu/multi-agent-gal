@@ -44,6 +44,11 @@ if [ "$AGENT_ID" = "shogun" ]; then
     exit 0
 fi
 
+# ─── Auto-slim YAML queue (non-blocking background) ───
+# Archives read-inbox messages / done-tasks / stale reports.
+# Runs on every stop so inbox cleanup is guaranteed even if wakeup step 1.5 is skipped.
+bash "$SCRIPT_DIR/scripts/slim_yaml.sh" "$AGENT_ID" &>/dev/null &
+
 # ─── Define inbox path early (used in multiple places below) ───
 INBOX="$SCRIPT_DIR/queue/inbox/${AGENT_ID}.yaml"
 
