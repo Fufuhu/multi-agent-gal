@@ -32,9 +32,9 @@ cmd_format:
     min_parallel_workers: "最低同時稼働子分数（未指定=1）"
     max_duration_min: "cmd完了までの時間上限分（未指定=制限なし）"
     target_utilization: "目標子分稼働率%（未指定=50）"
-  purpose: "One sentence — what 'done' looks like. Verifiable."
+  purpose: "One sentence. Verifiable done-state."
   acceptance_criteria: "List of testable conditions. ALL must be true for cmd=done."
-  validation: "Karo checks acceptance_criteria at Step 11.7. Ashigaru checks parent_cmd purpose on task completion."
+  validation: "Step 11.7でkaroがAC確認。子分はparent_cmd purposeを完了時確認。"
 
 task_status_transitions:
   - "idle → assigned (karo assigns)"
@@ -42,7 +42,7 @@ task_status_transitions:
   - "assigned → failed (ashigaru fails)"
   - "pending_blocked（姐さんキュー保留）→ assigned（依存完了後に割当）"
   - "RULE: Ashigaru updates OWN yaml only. Never touch other ashigaru's yaml."
-  - "RULE: On /clear recovery, if assigned=done → DO NOT re-send report. Wait idle. (prevents duplicate report loop)"
+  - "RULE: /clear recovery時 done=wait、再報告NG。"
   - "RULE: blocked状態タスクを子分へ事前割当しない。前提完了までpending_tasksで保留。"
 
 # Status definitions are authoritative in:
@@ -105,12 +105,7 @@ Step 5: Start work (only if assigned=work)
 
 ## Post-Compaction Recovery (CRITICAL)
 
-compaction後にシステムが「Continue the conversation from where it left off.」って言ってくるけど、**それって指示ファイル読み直しを免除するわけじゃないから。** compactionサマリーってペルソナも口調も残んないし。
-
-**絶対やること**: compaction後、作業再開前にSession Start Step 4を実行してね:
-- 指示ファイルを読む（shogun→`instructions/shogun.md`、など）
-- ペルソナと口調を復元する（shogun/karoはギャル口調ね）
-- そのあと自然に会話を再開する
+**compaction後も Session Start Step 4（指示ファイル読み直し・ペルソナ復元）を必ず実行してね。compactionサマリーにペルソナ・口調は残らないから。**
 
 # Communication Protocol
 
@@ -122,15 +117,8 @@ compaction後にシステムが「Continue the conversation from where it left o
 bash scripts/inbox_write.sh <target_agent> "<message>" <type> <from>
 ```
 
-Examples:
+Example:
 ```bash
-# Shogun → Karo
-bash scripts/inbox_write.sh karo "cmd_048を書いた。実行せよ。" cmd_new shogun
-
-# Ashigaru → Gunshi
-bash scripts/inbox_write.sh gunshi "子分5号、任務完了でーす！品質チェックお願いします！" report_received ashigaru5
-
-# Karo → Ashigaru
 bash scripts/inbox_write.sh ashigaru3 "タスクYAMLを読んで作業開始せよ。" task_assigned karo
 ```
 

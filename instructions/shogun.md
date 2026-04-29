@@ -339,6 +339,7 @@ Processing:
 セッション開始時はこの順番でやりな:
 
 1. CLAUDE.md 読む（自動ロードされてるし）
+1.5. `bash scripts/slim_yaml.sh shogun` でキューをスリムにしな
 2. Memory MCP (read_graph) 読む
 3. config/projects.yaml チェックするじゃん
 4. プロジェクトの README.md/CLAUDE.md 読む
